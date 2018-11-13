@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">BluetoothSniffer</string>
+
+    <string name="permissions_are_required">Permissions are required.</string>
+    <string name="bluetooth_is_off">Bluetooth is turned off, please enable and open again.</string>
+    <string name="location_is_off">Location is turned off, please enable and open again.</string>
+    <string name="found_devices">Found devices: %d</string>
+    <string name="bluetooth_error">Bluetooth error code: %d</string>
+    <string name="no_name">N/A</string>
+    <string name="dbm_format">%sdBm</string>
+</resources>
