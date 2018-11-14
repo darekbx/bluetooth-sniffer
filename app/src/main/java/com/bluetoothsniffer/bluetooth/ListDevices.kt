@@ -5,20 +5,31 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bluetoothsniffer.notifyObserver
 
+/*
 
+        curl -G "https://api.macvendors.com/v1/lookup/FC:FB:FB:01:FA:21" \
+             -H "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5c..."
+
+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJtYWN2ZW5kb3JzIiwiZXhwIjoxODU2NzI1NDQ0LCJpYXQiOjE1NDIyMjk0NDQsImlzcyI6Im1hY3ZlbmRvcnMiLCJqdGkiOiI3ZTFhNmRhNS0xYjkwLTQ1YjAtYjBmNS1jYmYyMzY1NTBjMTMiLCJuYmYiOjE1NDIyMjk0NDMsInN1YiI6IjkxMCIsInR5cCI6ImFjY2VzcyJ9.d91peGrdkB3NiMnUtF2n03xEaVXYqjtWBuacw02xqS2Mi4mbv-wI9IOU4oLjhcP4QNjsH9VLlBM38cbZnNHfXw
+
+*/
 class ListDevices(val bluetoothManager: BluetoothManager): ViewModel() {
 
     private val deviceAddresses = mutableListOf<String>()
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var leScanner: BluetoothLeScanner? = null
 
+    private var _results = MutableLiveData<MutableList<ScanResult>>()
+    private var _error = MutableLiveData<Int>()
+
     var isScanning = false
-    var results = MutableLiveData<MutableList<ScanResult>>()
-    var error = MutableLiveData<Int>()
+    var results: LiveData<MutableList<ScanResult>> = _results
+    var error: LiveData<Int> = _error
 
     fun startStop() {
         when (isScanning) {
@@ -30,7 +41,7 @@ class ListDevices(val bluetoothManager: BluetoothManager): ViewModel() {
 
     fun start() {
         bluetoothAdapter = bluetoothManager.adapter
-        results.value = mutableListOf()
+        _results.value = mutableListOf()
         leScanner = bluetoothAdapter?.bluetoothLeScanner
         leScanner?.startScan(scanCallback)
     }
@@ -45,7 +56,7 @@ class ListDevices(val bluetoothManager: BluetoothManager): ViewModel() {
 
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            error.value = errorCode
+            _error.value = errorCode
         }
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
@@ -53,8 +64,8 @@ class ListDevices(val bluetoothManager: BluetoothManager): ViewModel() {
             result?.run {
                 val deviceAddress = this.device.address
                 if (!deviceAddresses.contains(deviceAddress)) {
-                    results.value?.add(this)
-                    results.notifyObserver()
+                    _results.value?.add(this)
+                    _results.notifyObserver()
                     deviceAddresses.add(deviceAddress)
                 }
             }
