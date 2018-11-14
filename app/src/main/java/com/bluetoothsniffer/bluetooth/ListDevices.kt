@@ -12,6 +12,9 @@ import com.bluetoothsniffer.notifyObserver
 
 /*
 
+Add Room and table caches_macs id | mac | name
+mac is first six characters without colon like: FCFBFB
+
         curl -G "https://api.macvendors.com/v1/lookup/FC:FB:FB:01:FA:21" \
              -H "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5c..."
 
