@@ -3,9 +3,11 @@ package com.bluetoothsniffer.di
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.location.LocationManager
+import androidx.room.Room
 import com.bluetoothsniffer.BluetoothSnifferApplication
 import com.bluetoothsniffer.bluetooth.BluetoothUtils
 import com.bluetoothsniffer.permissons.PermissionsHelper
+import com.bluetoothsniffer.repository.AppDatabase
 import com.bluetoothsniffer.utils.LocationUtils
 import dagger.Module
 import dagger.Provides
@@ -35,4 +37,9 @@ class AppModule(val application: BluetoothSnifferApplication) {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return LocationUtils(locationManager)
     }
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(context: Context) =
+            Room.databaseBuilder(context, AppDatabase::class.java, AppDatabase.DB_NAME).build()
 }
