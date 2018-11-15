@@ -1,9 +1,9 @@
-package com.bluetoothsniffer.repository
+package com.bluetoothsniffer.repository.local
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.bluetoothsniffer.repository.entities.MacCache
+import com.bluetoothsniffer.repository.local.entities.MacCache
 
 @Dao
 interface MacCacheDao {

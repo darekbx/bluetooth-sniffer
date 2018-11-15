@@ -7,8 +7,9 @@ import androidx.room.Room
 import com.bluetoothsniffer.BluetoothSnifferApplication
 import com.bluetoothsniffer.bluetooth.BluetoothUtils
 import com.bluetoothsniffer.permissons.PermissionsHelper
-import com.bluetoothsniffer.repository.AppDatabase
+import com.bluetoothsniffer.repository.local.AppDatabase
 import com.bluetoothsniffer.utils.LocationUtils
+import com.bluetoothsniffer.utils.MacShortener
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -37,6 +38,10 @@ class AppModule(val application: BluetoothSnifferApplication) {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return LocationUtils(locationManager)
     }
+
+    @Provides
+    @Singleton
+    fun provideMacShortener() = MacShortener()
 
     @Provides
     @Singleton

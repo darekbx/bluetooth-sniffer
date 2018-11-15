@@ -1,4 +1,4 @@
-package com.bluetoothsniffer.repository.entities
+package com.bluetoothsniffer.repository.local.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
