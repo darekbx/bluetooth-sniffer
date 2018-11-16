@@ -9,7 +9,7 @@ import com.bluetoothsniffer.repository.local.entities.MacCache
 interface MacCacheDao {
 
     @Query("SELECT vendor_name FROM mac_cache WHERE mac_short = :macShort")
-    fun getCachedVendorName(macShort: String): String
+    fun getCachedVendorName(macShort: String): String?
 
     @Insert
     fun addVendorName(macCache: MacCache)

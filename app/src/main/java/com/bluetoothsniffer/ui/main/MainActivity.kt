@@ -1,6 +1,5 @@
 package com.bluetoothsniffer.ui.main
 
-import android.bluetooth.BluetoothManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
@@ -17,8 +16,10 @@ import com.bluetoothsniffer.bluetooth.BluetoothUtils
 import com.bluetoothsniffer.bluetooth.ListDevices
 import com.bluetoothsniffer.bluetooth.ListDevicesFactory
 import com.bluetoothsniffer.permissons.PermissionsHelper
+import com.bluetoothsniffer.repository.MacDescriptor
 import com.bluetoothsniffer.utils.LocationUtils
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -34,6 +35,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var listDevicesFactory: ListDevicesFactory
+
+    @Inject
+    lateinit var macDescriptor: MacDescriptor
 
     private lateinit var listDevices: ListDevices
 
@@ -59,6 +63,11 @@ class MainActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT).show()
             })
         }
+
+        launch {
+            val mac = "FC:FB:FB:01:FA:21"
+            val out = macDescriptor.resolveDeviceManufacturer(mac)
+        }
     }
 
     private fun updateDevicesCountLabel(count: Int) {
@@ -82,7 +91,12 @@ class MainActivity : AppCompatActivity() {
 
     fun onDevicesAction(v: View) {
         listDevices.startStop()
+        switchProgress()
         setButtonIcon()
+    }
+
+    private fun switchProgress() {
+        discover_progress.visibility = if (discover_progress.visibility == View.INVISIBLE) View.VISIBLE else View.INVISIBLE
     }
 
     private fun setButtonIcon() {

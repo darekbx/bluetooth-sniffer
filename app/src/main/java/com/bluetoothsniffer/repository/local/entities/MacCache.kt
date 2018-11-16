@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "mac_cache")
 data class MacCache(
-    @PrimaryKey var id: Int,
-    @ColumnInfo(name = "mac_short") var macShort: String,
-    @ColumnInfo(name = "vendor_name") var vendorName: String
+        @PrimaryKey(autoGenerate = true) var id: Long? = null,
+        @ColumnInfo(name = "mac_short") var macShort: String,
+        @ColumnInfo(name = "vendor_name") var vendorName: String
 )

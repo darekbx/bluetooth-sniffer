@@ -7,7 +7,10 @@ import androidx.room.Room
 import com.bluetoothsniffer.BluetoothSnifferApplication
 import com.bluetoothsniffer.bluetooth.BluetoothUtils
 import com.bluetoothsniffer.permissons.PermissionsHelper
+import com.bluetoothsniffer.repository.MacDescriptor
+import com.bluetoothsniffer.repository.remote.MacVendorProvider
 import com.bluetoothsniffer.repository.local.AppDatabase
+import com.bluetoothsniffer.repository.local.MacCacheDao
 import com.bluetoothsniffer.utils.LocationUtils
 import com.bluetoothsniffer.utils.MacShortener
 import dagger.Module
@@ -40,11 +43,24 @@ class AppModule(val application: BluetoothSnifferApplication) {
     }
 
     @Provides
-    @Singleton
     fun provideMacShortener() = MacShortener()
+
+    @Provides
+    fun provideMacVendorProvider() = MacVendorProvider()
+
+    @Provides
+    fun provideMacDescriptor(macVendorProvider: MacVendorProvider,
+                             macCacheDao: MacCacheDao,
+                             macShortener: MacShortener) =
+            MacDescriptor(macVendorProvider, macCacheDao, macShortener)
+
+    @Provides
+    @Singleton
+    fun provideMacCacheDao(appDatabase: AppDatabase) =
+            appDatabase.macCacheDao()
 
     @Provides
     @Singleton
     fun provideAppDatabase(context: Context) =
-            Room.databaseBuilder(context, AppDatabase::class.java, AppDatabase.DB_NAME).build()
+            Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, AppDatabase.DB_NAME).build()
 }
