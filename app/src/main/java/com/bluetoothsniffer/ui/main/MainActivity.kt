@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -19,7 +20,7 @@ import com.bluetoothsniffer.permissons.PermissionsHelper
 import com.bluetoothsniffer.repository.MacDescriptor
 import com.bluetoothsniffer.utils.LocationUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -64,9 +65,11 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        launch {
+        GlobalScope.launch(Dispatchers.Main) {
             val mac = "FC:FB:FB:01:FA:21"
-            val out = macDescriptor.resolveDeviceManufacturer(mac)
+            val out = GlobalScope.async(Dispatchers.IO) {
+                macDescriptor.resolveDeviceManufacturer(mac)
+            }.await()
         }
     }
 
