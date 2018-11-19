@@ -1,17 +1,17 @@
 package com.bluetoothsniffer.ui.main
 
-import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bluetoothsniffer.databinding.AdapterDeviceBinding
+import com.bluetoothsniffer.model.ScanResultWrapper
 
 class ScanResultsAdapter(context: Context) : RecyclerView.Adapter<ScanResultsAdapter.ScanResultViewHolder>() {
 
-    private var items = listOf<ScanResult>()
+    private var items = listOf<ScanResultWrapper>()
 
-    fun swapData(items: List<ScanResult>) {
+    fun swapData(items: List<ScanResultWrapper>) {
         this.items = items
         notifyDataSetChanged()
     }
@@ -31,8 +31,8 @@ class ScanResultsAdapter(context: Context) : RecyclerView.Adapter<ScanResultsAda
 
     class ScanResultViewHolder(val binding: AdapterDeviceBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(scanResult: ScanResult) {
-            binding.scanResult = scanResult
+        fun bind(scanResult: ScanResultWrapper) {
+            binding.wrapper = scanResult
             binding.executePendingBindings()
         }
     }

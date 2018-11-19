@@ -5,9 +5,11 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.bluetoothsniffer.model.ScanResultWrapper
 import com.bluetoothsniffer.notifyObserver
 
 class ListDevices(val bluetoothManager: BluetoothManager): ViewModel() {
@@ -16,11 +18,11 @@ class ListDevices(val bluetoothManager: BluetoothManager): ViewModel() {
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var leScanner: BluetoothLeScanner? = null
 
-    private var _results = MutableLiveData<MutableList<ScanResult>>()
+    private var _results = MutableLiveData<MutableList<ScanResultWrapper>>()
     private var _error = MutableLiveData<Int>()
 
     var isScanning = false
-    var results: LiveData<MutableList<ScanResult>> = _results
+    var results: LiveData<MutableList<ScanResultWrapper>> = _results
     var error: LiveData<Int> = _error
 
     fun startStop() {
@@ -56,7 +58,7 @@ class ListDevices(val bluetoothManager: BluetoothManager): ViewModel() {
             result?.run {
                 val deviceAddress = this.device.address
                 if (!deviceAddresses.contains(deviceAddress)) {
-                    _results.value?.add(this)
+                    _results.value?.add(ScanResultWrapper(this, ObservableField("")))
                     _results.notifyObserver()
                     deviceAddresses.add(deviceAddress)
                 }

@@ -2,8 +2,8 @@ package com.bluetoothsniffer.repository.remote
 
 import com.bluetoothsniffer.model.MacVendorWrapper
 import com.google.gson.Gson
-import java.net.HttpURLConnection
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 class MacVendorProvider {
 
@@ -14,7 +14,7 @@ class MacVendorProvider {
 
     fun requestVendorName(macShorted: String): MacVendorWrapper? {
         val url = URL("$API_URL$macShorted")
-        val urlConnection = (url.openConnection() as HttpURLConnection).apply {
+        val urlConnection = (url.openConnection() as HttpsURLConnection).apply {
             setRequestProperty("Authorization", "Bearer $AUTH_TOKEN")
         }
 

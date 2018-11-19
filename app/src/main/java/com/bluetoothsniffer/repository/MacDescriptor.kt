@@ -1,5 +1,6 @@
 package com.bluetoothsniffer.repository
 
+import android.util.Log
 import com.bluetoothsniffer.repository.local.MacCacheDao
 import com.bluetoothsniffer.repository.local.entities.MacCache
 import com.bluetoothsniffer.repository.remote.MacVendorProvider

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <import type="android.text.TextUtils" />
-        <variable name="scanResult" type="android.bluetooth.le.ScanResult" />
+        <variable name="wrapper" type="com.bluetoothsniffer.model.ScanResultWrapper" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,13 +19,23 @@
             app:layout_constraintStart_toStartOf="parent"
             android:paddingEnd="@dimen/outPadding"
             android:ellipsize="end"
-            android:text="@{TextUtils.isEmpty(scanResult.device.name) ? @string/no_name : scanResult.device.name.trim()}"
+            android:text="@{TextUtils.isEmpty(wrapper.scanResult.device.name) ? @string/no_name : wrapper.scanResult.device.name.trim()}"
             tools:text="Cosmose Device #4"
             android:paddingStart="@dimen/inPadding"
             android:paddingTop="@dimen/outPadding"
             style="@style/MediumText"
             android:typeface="monospace"
             android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/vendor_name"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:paddingStart="@dimen/outPadding"
+            app:layout_constraintBottom_toBottomOf="@id/device_name"
+            app:layout_constraintStart_toEndOf="@id/device_name"
+            tools:text="Apple"
+            android:text="@{wrapper.macVendorName}"
             />
 
         <TextView
@@ -34,7 +44,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/device_name"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="@{`[` + scanResult.device.address + `]`}"
+            android:text="@{`[` + wrapper.scanResult.device.address + `]`}"
             tools:text="[7u:98:4r:56:t7]"
             android:paddingStart="@dimen/inPadding"
             android:layout_marginTop="4dp"
@@ -51,7 +61,7 @@
             app:layout_constraintBottom_toBottomOf="@id/device_address"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="-75dBm"
-            android:text="@{@string/dbm_format(scanResult.rssi)}"
+            android:text="@{@string/dbm_format(wrapper.scanResult.rssi)}"
             style="@style/MediumText"
             android:drawableLeft="@drawable/ic_signal"
             android:drawablePadding="4dp"

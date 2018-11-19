@@ -21,6 +21,7 @@ import com.bluetoothsniffer.repository.MacDescriptor
 import com.bluetoothsniffer.utils.LocationUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
+import java.text.BreakIterator
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -57,6 +58,25 @@ class MainActivity : AppCompatActivity() {
             results.observe(this@MainActivity, Observer { scanResults ->
                 updateDevicesCountLabel(scanResults.size)
                 scanResultsAdapter.swapData(scanResults)
+
+
+                scanResults.forEach { item ->
+
+                    runOnUiThread {
+                        Log.v("-----", "start")
+                        GlobalScope.launch(Dispatchers.Main) {
+                            val mac = item.scanResult.device.address
+                            Log.v("-----", "start in $mac")
+                            val out = GlobalScope.async(Dispatchers.IO) {
+                                macDescriptor.resolveDeviceManufacturer(mac)
+                            }.await()
+                            Log.v("-----", "$mac - $out")
+                            item.macVendorName.set(out)
+                        }
+                    }
+                }
+
+
             })
             error.observe(this@MainActivity, Observer { errorCode ->
                 Toast.makeText(applicationContext,
@@ -65,12 +85,6 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        GlobalScope.launch(Dispatchers.Main) {
-            val mac = "FC:FB:FB:01:FA:21"
-            val out = GlobalScope.async(Dispatchers.IO) {
-                macDescriptor.resolveDeviceManufacturer(mac)
-            }.await()
-        }
     }
 
     private fun updateDevicesCountLabel(count: Int) {
