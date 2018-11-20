@@ -9,7 +9,7 @@ import com.bluetoothsniffer.model.ScanResultWrapper
 
 class ScanResultsAdapter(context: Context) : RecyclerView.Adapter<ScanResultsAdapter.ScanResultViewHolder>() {
 
-    private var items = listOf<ScanResultWrapper>()
+     var items = listOf<ScanResultWrapper>()
 
     fun swapData(items: List<ScanResultWrapper>) {
         this.items = items

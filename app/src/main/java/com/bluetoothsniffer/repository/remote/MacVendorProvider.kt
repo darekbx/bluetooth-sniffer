@@ -1,9 +1,12 @@
 package com.bluetoothsniffer.repository.remote
 
+import com.bluetoothsniffer.model.MacResponse
 import com.bluetoothsniffer.model.MacVendorWrapper
 import com.google.gson.Gson
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
+import java.net.HttpURLConnection
 
 class MacVendorProvider {
 
@@ -12,15 +15,33 @@ class MacVendorProvider {
         val API_URL = "https://api.macvendors.com/v1/lookup/"
     }
 
-    fun requestVendorName(macShorted: String): MacVendorWrapper? {
-        val url = URL("$API_URL$macShorted")
-        val urlConnection = (url.openConnection() as HttpsURLConnection).apply {
-            setRequestProperty("Authorization", "Bearer $AUTH_TOKEN")
-        }
+    enum class Status {
+        FOUND,
+        NOT_FOUND,
+        ERROR
+    }
 
-        urlConnection.connect()
-        urlConnection.inputStream.bufferedReader().use { buffer ->
-            return Gson().fromJson(buffer.readText(), MacVendorWrapper::class.java)
+    fun requestVendorName(macShorted: String): MacResponse {
+        val loggingInterceptor = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+        val client = OkHttpClient()
+                .newBuilder()
+                .addInterceptor(loggingInterceptor)
+                .build()
+        val request = Request.Builder()
+                .url("$API_URL$macShorted")
+                .addHeader("Authorization", "Bearer $AUTH_TOKEN")
+                .build()
+        val response = client.newCall(request).execute()
+
+        return when (response.code()) {
+            HttpURLConnection.HTTP_OK -> {
+                MacResponse(
+                        wrapper = Gson().fromJson(response.body()?.string(), MacVendorWrapper::class.java),
+                        status = Status.FOUND
+                )
+            }
+            HttpURLConnection.HTTP_NOT_FOUND -> MacResponse(status = Status.NOT_FOUND)
+            else -> MacResponse(status = Status.ERROR)
         }
     }
 }

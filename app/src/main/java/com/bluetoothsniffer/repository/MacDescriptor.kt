@@ -10,7 +10,8 @@ import java.lang.Exception
 class MacDescriptor(
         private val macVendorProvider: MacVendorProvider,
         private val macCacheDao: MacCacheDao,
-        private val macShortener: MacShortener) {
+        private val macShortener: MacShortener,
+        private val emptyText: String) {
 
     fun resolveDeviceManufacturer(macAddress: String): String? {
         val macShorted = macShortener.createShortMac(macAddress)
@@ -23,20 +24,24 @@ class MacDescriptor(
         } ?: null
     }
 
-    private fun fetchVendorName(macShorted: String): String? {
+    private fun fetchVendorName(macShorted: String): String {
         try {
-            val wrapper = macVendorProvider.requestVendorName(macShorted)
-            when (wrapper) {
-                null -> return null
-                else -> {
-                    val vendorName = wrapper.data.organizationName
+            val response = macVendorProvider.requestVendorName(macShorted)
+            when (response.status) {
+                MacVendorProvider.Status.ERROR -> return emptyText
+                MacVendorProvider.Status.NOT_FOUND -> {
+                    macCacheDao.addVendorName(MacCache(macShort = macShorted, vendorName = emptyText))
+                    return emptyText
+                }
+                MacVendorProvider.Status.FOUND -> {
+                    val vendorName = response.wrapper?.data?.organizationName ?: emptyText
                     macCacheDao.addVendorName(MacCache(macShort = macShorted, vendorName = vendorName))
                     return vendorName
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            return null
+            return emptyText
         }
     }
 }

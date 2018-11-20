@@ -60,23 +60,18 @@ class MainActivity : AppCompatActivity() {
                 scanResultsAdapter.swapData(scanResults)
 
 
-                scanResults.forEach { item ->
-
-                    runOnUiThread {
-                        Log.v("-----", "start")
-                        GlobalScope.launch(Dispatchers.Main) {
-                            val mac = item.scanResult.device.address
-                            Log.v("-----", "start in $mac")
-                            val out = GlobalScope.async(Dispatchers.IO) {
-                                macDescriptor.resolveDeviceManufacturer(mac)
-                            }.await()
-                            Log.v("-----", "$mac - $out")
-                            item.macVendorName.set(out)
-                        }
+                scanResultsAdapter.items.forEach { item ->
+                    GlobalScope.launch(Dispatchers.Main) {
+                        val mac = item.scanResult.device.address
+                        Log.v("-------", "Pre: $mac")
+                        val out = GlobalScope.async(Dispatchers.IO) {
+                            Thread.sleep(1000)
+                            macDescriptor.resolveDeviceManufacturer(mac)
+                        }.await()
+                        Log.v("------", "Value: $out")
+                        item.macVendorName.set(out)
                     }
                 }
-
-
             })
             error.observe(this@MainActivity, Observer { errorCode ->
                 Toast.makeText(applicationContext,
@@ -84,7 +79,6 @@ class MainActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT).show()
             })
         }
-
     }
 
     private fun updateDevicesCountLabel(count: Int) {

@@ -5,6 +5,7 @@ import android.content.Context
 import android.location.LocationManager
 import androidx.room.Room
 import com.bluetoothsniffer.BluetoothSnifferApplication
+import com.bluetoothsniffer.R
 import com.bluetoothsniffer.bluetooth.BluetoothUtils
 import com.bluetoothsniffer.permissons.PermissionsHelper
 import com.bluetoothsniffer.repository.MacDescriptor
@@ -51,8 +52,9 @@ class AppModule(val application: BluetoothSnifferApplication) {
     @Provides
     fun provideMacDescriptor(macVendorProvider: MacVendorProvider,
                              macCacheDao: MacCacheDao,
-                             macShortener: MacShortener) =
-            MacDescriptor(macVendorProvider, macCacheDao, macShortener)
+                             macShortener: MacShortener,
+                             context: Context) =
+            MacDescriptor(macVendorProvider, macCacheDao, macShortener, context.getString(R.string.unknown_manufacturer))
 
     @Provides
     @Singleton

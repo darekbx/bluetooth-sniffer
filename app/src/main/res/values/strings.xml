@@ -7,5 +7,6 @@
     <string name="found_devices">Found devices: %d</string>
     <string name="bluetooth_error">Bluetooth error code: %d</string>
     <string name="no_name">N/A</string>
+    <string name="unknown_manufacturer">Unknown manufacturer</string>
     <string name="dbm_format">%sdBm</string>
 </resources>
