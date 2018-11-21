@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -21,7 +20,6 @@ import com.bluetoothsniffer.repository.MacDescriptor
 import com.bluetoothsniffer.utils.LocationUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
-import java.text.BreakIterator
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -42,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var macDescriptor: MacDescriptor
 
     private lateinit var listDevices: ListDevices
+    private var macVendorsJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,26 +57,26 @@ class MainActivity : AppCompatActivity() {
             results.observe(this@MainActivity, Observer { scanResults ->
                 updateDevicesCountLabel(scanResults.size)
                 scanResultsAdapter.swapData(scanResults)
-
-
-                scanResultsAdapter.items.forEach { item ->
-                    GlobalScope.launch(Dispatchers.Main) {
-                        val mac = item.scanResult.device.address
-                        Log.v("-------", "Pre: $mac")
-                        val out = GlobalScope.async(Dispatchers.IO) {
-                            Thread.sleep(1000)
-                            macDescriptor.resolveDeviceManufacturer(mac)
-                        }.await()
-                        Log.v("------", "Value: $out")
-                        item.macVendorName.set(out)
-                    }
-                }
+                provideMacVendors()
             })
             error.observe(this@MainActivity, Observer { errorCode ->
                 Toast.makeText(applicationContext,
                         getString(R.string.bluetooth_error, errorCode),
                         Toast.LENGTH_SHORT).show()
             })
+        }
+    }
+
+    private fun provideMacVendors() {
+        macVendorsJob?.cancel()
+        macVendorsJob = GlobalScope.launch(Dispatchers.Main) {
+            scanResultsAdapter.items.forEach { item ->
+                val mac = item.scanResult.device.address
+                val out = async(Dispatchers.IO) {
+                    macDescriptor.resolveDeviceManufacturer(mac)
+                }.await()
+                item.macVendorName.set(out)
+            }
         }
     }
 
