@@ -1,5 +1,6 @@
 package com.bluetoothsniffer.ui.main
 
+import android.bluetooth.le.ScanResult
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
@@ -51,6 +52,10 @@ class MainActivity : AppCompatActivity() {
 
         scan_results_list.adapter = scanResultsAdapter
         scan_results_list.layoutManager = LinearLayoutManager(this)
+        scanResultsAdapter.onScanResultClick = { scanResult: ScanResult ->
+            Toast.makeText(this@MainActivity, scanResult.device.address, Toast.LENGTH_SHORT).show()
+        }
+
         listDevices = ViewModelProviders.of(this, listDevicesFactory).get(ListDevices::class.java)
 
         with(listDevices) {

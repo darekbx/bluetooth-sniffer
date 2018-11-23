@@ -1,5 +1,6 @@
 package com.bluetoothsniffer.ui.main
 
+import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -16,18 +17,21 @@ fun setSignalIcon(view: View, scanResult: ScanResultWrapper) {
     imageView.setCompoundDrawablesWithIntrinsicBounds(scanResult.signalStrengthIcon(), 0, 0, 0)
 }
 
-class ScanResultsAdapter(context: Context) : RecyclerView.Adapter<ScanResultsAdapter.ScanResultViewHolder>() {
+class ScanResultsAdapter(context: Context)
+    : RecyclerView.Adapter<ScanResultsAdapter.ScanResultViewHolder>() {
 
-     var items = listOf<ScanResultWrapper>()
+    var items = listOf<ScanResultWrapper>()
 
     fun swapData(items: List<ScanResultWrapper>) {
         this.items = items
         notifyDataSetChanged()
     }
 
+    var onScanResultClick: ((scanResult: ScanResult) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScanResultViewHolder {
         val binding = AdapterDeviceBinding.inflate(inflater, parent, false)
-        return ScanResultViewHolder(binding)
+        return ScanResultViewHolder(binding, onScanResultClick)
     }
 
     override fun getItemCount() = items.size
@@ -38,10 +42,17 @@ class ScanResultsAdapter(context: Context) : RecyclerView.Adapter<ScanResultsAda
 
     private val inflater by lazy { LayoutInflater.from(context) }
 
-    class ScanResultViewHolder(val binding: AdapterDeviceBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ScanResultViewHolder(val binding: AdapterDeviceBinding,
+                               val scanResultClick: ((scanResult: ScanResult) -> Unit)?)
+        : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(scanResult: ScanResultWrapper) {
             binding.wrapper = scanResult
+            binding.root.setOnClickListener {
+                binding.wrapper?.run {
+                    scanResultClick?.invoke(this.scanResult)
+                }
+            }
             binding.executePendingBindings()
         }
     }
