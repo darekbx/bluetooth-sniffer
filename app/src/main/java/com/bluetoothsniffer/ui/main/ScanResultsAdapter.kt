@@ -2,10 +2,19 @@ package com.bluetoothsniffer.ui.main
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bluetoothsniffer.databinding.AdapterDeviceBinding
 import com.bluetoothsniffer.model.ScanResultWrapper
+
+@BindingAdapter("app:signalIcon")
+fun setSignalIcon(view: View, scanResult: ScanResultWrapper) {
+    val imageView = view as TextView
+    imageView.setCompoundDrawablesWithIntrinsicBounds(scanResult.signalStrengthIcon(), 0, 0, 0)
+}
 
 class ScanResultsAdapter(context: Context) : RecyclerView.Adapter<ScanResultsAdapter.ScanResultViewHolder>() {
 
