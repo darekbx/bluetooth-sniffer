@@ -9,4 +9,8 @@
     <string name="no_name">N/A</string>
     <string name="unknown_manufacturer">Unknown manufacturer</string>
     <string name="dbm_format">%sdBm</string>
+
+    <string name="device_name_label">Device name</string>
+    <string name="device_address_label">Device address</string>
+    <string name="rssi_label">RSSI</string>
 </resources>

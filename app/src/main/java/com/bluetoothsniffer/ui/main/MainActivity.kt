@@ -18,6 +18,7 @@ import com.bluetoothsniffer.bluetooth.ListDevices
 import com.bluetoothsniffer.bluetooth.ListDevicesFactory
 import com.bluetoothsniffer.permissons.PermissionsHelper
 import com.bluetoothsniffer.repository.MacDescriptor
+import com.bluetoothsniffer.ui.device.DeviceActivity
 import com.bluetoothsniffer.utils.LocationUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -52,9 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         scan_results_list.adapter = scanResultsAdapter
         scan_results_list.layoutManager = LinearLayoutManager(this)
-        scanResultsAdapter.onScanResultClick = { scanResult: ScanResult ->
-            Toast.makeText(this@MainActivity, scanResult.device.address, Toast.LENGTH_SHORT).show()
-        }
+        scanResultsAdapter.onScanResultClick = { openScanResult(it) }
 
         listDevices = ViewModelProviders.of(this, listDevicesFactory).get(ListDevices::class.java)
 
@@ -70,6 +69,12 @@ class MainActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT).show()
             })
         }
+    }
+
+    private fun openScanResult(scanResult: ScanResult) {
+        startActivity(Intent(this, DeviceActivity::class.java).apply {
+            putExtra(DeviceActivity.SCAN_RESULT_KEY, scanResult)
+        })
     }
 
     private fun provideMacVendors() {
