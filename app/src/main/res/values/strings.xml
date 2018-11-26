@@ -13,4 +13,10 @@
     <string name="device_name_label">Device name</string>
     <string name="device_address_label">Device address</string>
     <string name="rssi_label">RSSI</string>
+
+    <string name="state_connecting">Connecting...</string>
+    <string name="state_connected">Connected</string>
+    <string name="state_disconnected">Disconnected</string>
+    <string name="state_disconnecting">Disconnecting...</string>
+    <string name="state_unknown">Unknown</string>
 </resources>

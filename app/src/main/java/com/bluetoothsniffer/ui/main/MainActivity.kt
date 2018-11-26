@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setButtonIcon() {
-        val icon = if (listDevices.isScanning) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
+        val icon = if (listDevices.isScanning) R.drawable.ic_stop else R.drawable.ic_play
         devices_action.setImageResource(icon)
     }
 

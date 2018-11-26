@@ -11,7 +11,6 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="20dp"
         android:clipToPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +22,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:background="#fff"
             android:elevation="8dp"
-            android:padding="@dimen/inPadding"
+            android:paddingTop="@dimen/inPadding"
             >
             <TextView
                 android:id="@+id/device_name_label"
@@ -31,6 +30,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="@dimen/inPadding"
                 android:text="@string/device_name_label"
                 style="@style/MediumLabel"
                 />
@@ -52,6 +52,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/device_name_label"
                 app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="@dimen/inPadding"
                 android:text="@string/device_address_label"
                 style="@style/MediumLabel"
                 />
@@ -73,6 +74,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/device_address_label"
                 app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="@dimen/inPadding"
                 android:text="@string/rssi_label"
                 style="@style/MediumLabel"
                 />
@@ -87,6 +89,48 @@
                 android:text="@{scanResult.rssi + `dBm`}"
                 style="@style/MediumText"
                 />
+
+            <ImageView
+                android:id="@+id/discover_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/inPadding"
+                android:src="@drawable/ic_discover"
+                android:onClick="onDiscoverClick"
+                />
+            <ProgressBar
+                android:id="@+id/discover_progress"
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:minHeight="10dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:indeterminate="true"
+                android:layout_marginTop="69dp"
+                android:visibility="invisible"
+                style="?android:attr/progressBarStyleHorizontal"
+                />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <TextView
+            android:id="@+id/status_label"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingStart="@dimen/inPadding"
+            android:gravity="center_vertical"
+            tools:text="Unknown"
+            android:background="#ddd"
+            style="@style/MediumText"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
